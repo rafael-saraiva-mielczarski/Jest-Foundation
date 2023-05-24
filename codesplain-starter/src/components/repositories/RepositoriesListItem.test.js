@@ -1,4 +1,4 @@
-import {render, screen, act } from '@testing-library/react'
+import {render, screen, act, findByRole } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import RepositoriesListItem from './RepositoriesListItem'
 
@@ -18,7 +18,9 @@ function renderComponent() {
         full_name: 'facebook/react',
         language: 'Javascript',
         description: 'JS lib',
-        owner: 'facebook',
+        owner: {
+            login: 'facebook',
+        },
         name: 'react',
         html_url: 'https://github.com/facebook/react'
     }
@@ -47,6 +49,25 @@ test("mostra um link para a homepage do github desse repositorio", async () => {
     // await act(async() => {
     //     await pause()
     // })
+})
+
+//como lida com request http, o test tem q ser async e await onde iremos pegar o elemento da chamada
+test('mostra o fileicon com o icon apropriado', async () => {
+    renderComponent()
+
+    const icon = await screen.findByRole('img', { name: 'Javascript' })
+
+    expect(icon).toHaveClass('js-icon')
+})
+
+test('mostra link para a pagina de editor do codigo', async () => {
+    const {repository} = renderComponent()
+
+    await screen.findByRole('img', { name: 'Javascript' })
+
+    const link = await screen.findByRole('link', { name: new RegExp(repository.owner.login) })
+
+    expect(link).toHaveAttribute('href', `/repositories/${repository.full_name}`)
 })
 
 //esssa func serve como workaround para dar um pause de alguns milisegundo no teste, para que o request http possa acontecer sem erro
