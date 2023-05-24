@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { MarkGithubIcon } from '@primer/octicons-react';
 import FileIcon from '../tree/FileIcon';
 import RepositoriesSummary from './RepositoriesSummary';
 
@@ -14,6 +15,12 @@ function RepositoriesListItem({ repository }) {
         </Link>
         <p className="text-gray-500 italic py-1">{description}</p>
         <RepositoriesSummary repository={repository} />
+      </div>
+      <div className='grow flex items-center justify-end pr-2'>
+        {/* o aria-label serve para quem usa o screen reader saber o que o link esta direcionando e ajuda a selecionar ele no test case */}
+        <a href={repository.html_url} aria-label="github repository">
+            <MarkGithubIcon />
+        </a>
       </div>
     </div>
   );
