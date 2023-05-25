@@ -3,8 +3,24 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { MemoryRouter } from 'react-router-dom';
 import HomeRoute from './HomeRoute';
+import { createServer } from '../test/server';
 
-//Quando for testar um componente que tem data fetching, sempre analisar qual o tipo de dado que estamos buscando pois tem q retornar algum tipo de dado que seja parecido que possamos testar, e tambem ajeitar esse dado para que seja algo testavel e relevante. Esse eh o primeiro passo para qualquer teste como requests
+//QUANDO FOR TESTAR UM COMPONENTE QUE TEM DATA FETCHING, SEMPRE ANALISAR QUAL O TIPO DE DADO QUE ESTAMOS BUSCANDO POIS TEM Q RETORNAR ALGUM TIPO DE DADO QUE SEJA PARECIDO QUE POSSAMOS TESTAR, E TAMBEM AJEITAR ESSE DADO PARA QUE SEJA ALGO TESTAVEL E RELEVANTE. ESSE EH O PRIMEIRO PASSO PARA QUALQUER TESTE COMO REQUESTS
+
+createServer([
+    {
+        path: '/api/repositories',
+        res: (req) => {
+            const language = req.url.searchParams.get('q').split('language:')[1]
+            return {
+                items: [
+                    { id: 1, full_name: `${language}_one` },
+                    { id: 2, full_name: `${language}_two` },
+                ]
+            }
+        }
+    }
+])
 
 const handlers = [
     //esse func observa todos os requests q foram feitos no ambiente de teste e interceptar todos os GETS que forem feitos para a url
